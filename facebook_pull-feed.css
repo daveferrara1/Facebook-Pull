@@ -1,0 +1,5 @@
+ul.facebook-feed { list-style-type: none; margin: 0; padding: 0; background: none; }
+ul.facebook-feed li { list-style-type: none; margin: 0 0 10px 0; padding: 0; }
+ul.facebook-feed .facebook-feed-from { float: left; margin-right: 5px; margin-bottom: 2px; }
+ul.facebook-feed .facebook-feed-time { display: block; color: #666; }
+

@@ -1,0 +1,5 @@
+name = Facebook pull
+description = Fast and efficient module to pull from a facebook feed
+core = 6.x
+version = "6.x-1.0"
+
