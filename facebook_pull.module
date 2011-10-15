@@ -21,11 +21,11 @@ function facebook_pull_init() {
 function facebook_pull_theme($existing, $type, $theme, $path) {
   $theme = array(
     'facebook_pull_feed' => array(
-      'arguments' => array('items' => array()),
+      'variables' => array('items' => array()),
       'template'  => 'facebook_pull-feed',
     ),
     'facebook_pull_notes' => array(
-      'arguments' => array('feedid' => 0, 'items' => array()),
+      'variables' => array('feedid' => 0, 'items' => array()),
       'template'  => 'facebook_pull-notes',
     ),
   );
@@ -37,8 +37,12 @@ function facebook_pull_theme($existing, $type, $theme, $path) {
  * Implementation of hook_perm().
  */
 
-function facebook_pull_perm() {
-  return array('administer facebook pull');
+function facebook_pull_permission() {
+  return array(
+    'administer facebook pull' => array(
+      'title' => t('Administer facebook pull'),
+    ),
+  );
 }
 
 
@@ -48,7 +52,7 @@ function facebook_pull_perm() {
 function facebook_pull_menu() {
   $items = array();
 
-  $items['admin/settings/facebook-pull'] = array(
+  $items['admin/config/services/facebook-pull'] = array(
     'title' => 'Facebook pull',
     'description' => 'Set Facebook API details for facebook blocks.',
     'page callback' => 'drupal_get_form',
@@ -62,29 +66,38 @@ function facebook_pull_menu() {
 
 
 /**
- * Implementation of hook_block().
+ * Implementation of hook_block_list().
  */
-function facebook_pull_block($op = 'list', $delta = 0, $edit = array()) {
-  switch ($op) {
-    case 'list':
-      $blocks = array();
+function facebook_pull_block_info() {
+  $blocks = array();
 
-      $blocks['facebook_pull_default'] = array(
-        'info' => t('Facebook stream'),
-        'weight' => 0,
-        'status' => 0,
-        'cache' => BLOCK_CACHE_GLOBAL,
-      );
+  $blocks['facebook_pull_default'] = array(
+    'info' => t('Facebook stream'),
+    'weight' => 0,
+    'status' => 0,
+    'cache' => DRUPAL_CACHE_GLOBAL,
+  );
 
-      return $blocks;
+  return $blocks;
+}
 
-    case 'view':
+
+/**
+ * Implementation of hook_block_view().
+ */
+function facebook_pull_block_view($delta = '') {
+  $block = array();
+  
+  switch ($delta) {
+    case 'facebook_pull_default':
       $block = array(
-        'subject' => t('Facebook'),
+        'title' => t('Facebook stream'),
         'content' => _facebook_pull_render_block(),
       );
-      return $block;
+      break;
   }
+  
+  return $block;
 }
 
 
@@ -171,7 +184,7 @@ function facebook_pull_render($graph_id, $type, $app_id, $app_secret, $options =
   if (!$data) {
     return '';
   }
-  return theme('facebook_pull_feed', $data);
+  return theme('facebook_pull_feed', array('items' => $data));
 }
 
 
@@ -188,7 +201,7 @@ function facebook_pull_notes($id, $key, $viewer = 0, $limit = 5) {
   for ($i = 0; $i < $limit; $i++) {
     $entries[] = $feed->entry[$i];
   }
-  return theme('facebook_pull_notes', $id, $entries);
+  return theme('facebook_pull_notes', array('feedid' => $id, 'items' => $entries));
 }
 
 
