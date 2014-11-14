@@ -21,7 +21,7 @@ class facebook_pull_box extends boxes_box {
   /**
    * Implementation of boxes_content::options_form().
    */
-  public function options_form() {
+  public function options_form(&$form_state) {
     $form = array();
 
     $application_id = l(t('Application ID'), 'https://developers.facebook.com/apps');
