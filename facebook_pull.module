@@ -314,3 +314,28 @@ function _facebook_pull_render_block() {
 
   return facebook_pull_render($graph_id, $type, $app_id, $app_secret, $options = array('limit' => $limit));
 }
+
+///
+// Added for Notes section https://www.drupal.org/node/1993764
+///
+
+/**
+ * Implements hook_preprocess_HOOK();
+ */
+function facebook_pull_preprocess_facebook_pull_feed(&$variables) {
+  global $is_https;
+  foreach ($variables['items'] as &$item) {
+    $from = &$item->from;
+    $scheme = $is_https ? 'https' : 'http';
+    $from->picture = "$scheme://graph.facebook.com/$from->id/picture";
+  }
+}
+
+/**
+ * Implements hook_preprocess_HOOK();
+ */
+function facebook_pull_preprocess_facebook_pull_notes(&$variables) {
+  global $is_https;
+  $scheme = $is_https ? 'https' : 'http';
+  $variables['picture'] = "$scheme://graph.facebook.com/$variables[feedid]/picture";
+}

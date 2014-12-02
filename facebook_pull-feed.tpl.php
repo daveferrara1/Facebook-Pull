@@ -1,8 +1,8 @@
 <ul class="facebook-feed">
 <?php foreach ($items as $item): ?>
   <li class="item">
-    <span class="facebook-feed-picture"><img alt="<?php echo $item->from->name; ?>" src="http://graph.facebook.com/<?php echo $item->from->id; ?>/picture" /></span>
-    <span class="facebook-feed-from"><a href="http://facebook.com/profile.php?id=<?php echo $item->from->id; ?>"><?php echo $item->from->name; ?></a></span>
+  <span class="facebook-feed-picture"><img alt="<?php echo $item->from->name; ?>" src="//graph.facebook.com/<?php echo $item->from->id; ?>/picture" /></span>
+  <span class="facebook-feed-from"><a href="//facebook.com/profile.php?id=<?php echo $item->from->id; ?>"><?php echo $item->from->name; ?></a></span>
     <span class="facebook-feed-message">
       <?php if (isset($item->message)) echo $item->message; ?>
       <?php if ($item->type === 'link'): ?>
