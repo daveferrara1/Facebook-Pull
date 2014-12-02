@@ -87,7 +87,7 @@ function facebook_pull_block_info() {
  */
 function facebook_pull_block_view($delta = '') {
   $block = array();
-  
+
   switch ($delta) {
     case 'facebook_pull_default':
       $block = array(
@@ -96,7 +96,7 @@ function facebook_pull_block_view($delta = '') {
       );
       break;
   }
-  
+
   return $block;
 }
 
@@ -161,7 +161,7 @@ function facebook_pull_settings($form_state) {
     '#type' => 'textfield',
     '#title' => t('Object type'),
     '#default_value' => t(variable_get('facebook_pull_object_type', '')),
-    '#description' => t('The object type to pull, e.g. friends, feed, photos.'),
+    '#description' => t('The object type to pull. This is most likely going to be "feed". Facebook API documentation may offer other endpoints such as "posts" or "tagged". They are not throughly tested.'),
   );
 
   $form['facebook_pull_limit'] = array(

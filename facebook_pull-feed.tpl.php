@@ -7,7 +7,7 @@
       <?php if (isset($item->message)) echo $item->message; ?>
       <?php if ($item->type === 'link'): ?>
         <?php if (isset($item->description)) echo $item->description; ?>
-        <?php echo l($item->name, $item->link); ?>
+        <?php if (isset($item->name)) echo l($item->name, $item->link); ?>
       <?php endif; ?>
     </span>
     <span class="facebook-feed-time"><?php echo t('!time ago.', array('!time' => format_interval(time() - strtotime($item->created_time)))); ?></span>
