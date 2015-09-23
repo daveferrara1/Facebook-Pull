@@ -272,7 +272,8 @@ function _facebook_pull_feed($graph_id, $type, $token, $options = array()) {
   $qs = http_build_query($options, '', '&');
   $url = "https://graph.facebook.com/%s/%s?%s&%s";
   $fullurl = sprintf($url, $graph_id, $type, $token, $qs);
-  $raw = file_get_contents($fullurl);
+  $raw = drupal_http_request($fullurl);
+  $raw = $raw->data;
   $data = json_decode($raw);
   if (!isset($data->data)) {
     $message = 'Failed to fetch data from the Facebook Graph';
@@ -291,7 +292,8 @@ function _facebook_pull_accesstoken($app_id, $app_secret) {
   $endpoint = 'https://graph.facebook.com/oauth/access_token?client_id=%s&client_secret=%s&grant_type=client_credentials';
 
   $fullurl = sprintf($endpoint, $app_id, $app_secret);
-  $token = file_get_contents($fullurl);
+  $token = drupal_http_request($fullurl);
+  $token = $token->data;
   if (!$token) {
     $message = 'Failed to fetch data from the Facebook Graph';
     $variables = array();
