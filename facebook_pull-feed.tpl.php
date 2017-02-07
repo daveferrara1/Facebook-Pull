@@ -14,8 +14,11 @@
         <?php if (isset($item->description)) echo $item->description; ?>
         <?php if (isset($item->name)) echo l($item->name, $item->link); ?>
       <?php endif; ?>
-      <?php if (in_array($item->type, array('photo', 'video'))): ?>
+      <?php if (in_array($item->type, array('photo', 'video')) && (isset($item->link))): ?>
         <?php echo l('<img src="' . $item->picture . '" />', $item->link, array('html' => true, 'attributes' => array('target' => '_blank'))); ?>
+      <?php endif; ?>
+      <?php if (in_array($item->type, array('photo', 'video')) && (!isset($item->link))): ?>
+        <?php echo '<img src="' . $item->picture . '" />' ?>
       <?php endif; ?>
       <?php if ($item->type === 'question'): ?>
         <?php echo $item->question; ?>

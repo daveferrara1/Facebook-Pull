@@ -353,7 +353,6 @@ function _facebook_pull_render_block() {
 /**
  * Implements hook_preprocess_HOOK().
  *
- * Added for Notes from: https://www.drupal.org/node/1993764
  */
 function facebook_pull_preprocess_facebook_pull_feed(&$variables) {
   if ($variables['items']) {
