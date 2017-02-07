@@ -10,18 +10,20 @@
     <?php endif; ?>
     <span class="facebook-feed-message">
       <?php if (isset($item->message)) echo $item->message; ?>
-      <?php if ($item->type === 'link'): ?>
-        <?php if (isset($item->description)) echo $item->description; ?>
-        <?php if (isset($item->name)) echo l($item->name, $item->link); ?>
-      <?php endif; ?>
-      <?php if (in_array($item->type, array('photo', 'video')) && (isset($item->link))): ?>
-        <?php echo l('<img src="' . $item->picture . '" />', $item->link, array('html' => true, 'attributes' => array('target' => '_blank'))); ?>
-      <?php endif; ?>
-      <?php if (in_array($item->type, array('photo', 'video')) && (!isset($item->link))): ?>
-        <?php echo '<img src="' . $item->picture . '" />' ?>
-      <?php endif; ?>
-      <?php if ($item->type === 'question'): ?>
-        <?php echo $item->question; ?>
+      <?php if (isset($item->type)): ?>
+        <?php if ($item->type === 'link'): ?>
+          <?php if (isset($item->description)) echo $item->description; ?>
+          <?php if (isset($item->name)) echo l($item->name, $item->link); ?>
+        <?php endif; ?>
+        <?php if (in_array($item->type, array('photo', 'video')) && (isset($item->link))): ?>
+          <?php echo l('<img src="' . $item->picture . '" />', $item->link, array('html' => true, 'attributes' => array('target' => '_blank'))); ?>
+        <?php endif; ?>
+        <?php if (in_array($item->type, array('photo', 'video')) && (!isset($item->link))): ?>
+          <?php echo '<img src="' . $item->picture . '" />' ?>
+        <?php endif; ?>
+        <?php if ($item->type === 'question'): ?>
+          <?php echo $item->question; ?>
+        <?php endif; ?>
       <?php endif; ?>
     </span>
     <span class="facebook-feed-time"><?php echo t('!time ago.', array('!time' => format_interval(time() - strtotime($item->created_time)))); ?></span>
