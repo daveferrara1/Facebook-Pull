@@ -1,8 +1,10 @@
 <ul class="facebook-feed">
 <?php foreach ($items as $item): ?>
   <li class="item">
-  <span class="facebook-feed-picture"><img alt="<?php echo $item->from->name; ?>" src="//graph.facebook.com/<?php echo $item->from->id; ?>/picture" /></span>
-  <span class="facebook-feed-from"><a href="//facebook.com/profile.php?id=<?php echo $item->from->id; ?>"><?php echo $item->from->name; ?></a></span>
+  <?php if (isset($item->from)): ?>
+    <span class="facebook-feed-picture"><img alt="<?php echo $item->from->name; ?>" src="//graph.facebook.com/<?php echo $item->from->id; ?>/picture" /></span>
+    <span class="facebook-feed-from"><a href="//facebook.com/profile.php?id=<?php echo $item->from->id; ?>"><?php echo $item->from->name; ?></a></span>
+  <?php endif; ?>
   <?php if (isset($item->story)): ?>
       <span class="facebook-feed-story"><?php echo str_replace($item->from->name, '', $item->story); ?></span>
     <?php endif; ?>

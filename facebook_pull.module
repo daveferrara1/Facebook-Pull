@@ -10,7 +10,7 @@ define('FACEBOOK_PULL_CACHETIME', 1200);
 
 
 /**
- * Implementation of hook_init().
+ * Implements hook_init().
  */
 function facebook_pull_init() {
   drupal_add_css(drupal_get_path('module', 'facebook_pull') . '/facebook_pull.css');
@@ -18,7 +18,7 @@ function facebook_pull_init() {
 
 
 /**
- * Implementation of hook_theme().
+ * Implements hook_theme().
  */
 function facebook_pull_theme($existing, $type, $theme, $path) {
   $theme = array(
@@ -36,7 +36,7 @@ function facebook_pull_theme($existing, $type, $theme, $path) {
 
 
 /**
- * Implementation of hook_perm().
+ * Implements hook_perm().
  */
 function facebook_pull_permission() {
   return array(
@@ -48,7 +48,7 @@ function facebook_pull_permission() {
 
 
 /**
- * Implementation of hook_menu().
+ * Implements hook_menu().
  */
 function facebook_pull_menu() {
   $items = array();
@@ -67,7 +67,7 @@ function facebook_pull_menu() {
 
 
 /**
- * Implementation of hook_block_list().
+ * Implements hook_block_list().
  */
 function facebook_pull_block_info() {
   $blocks = array();
@@ -84,7 +84,7 @@ function facebook_pull_block_info() {
 
 
 /**
- * Implementation of hook_block_view().
+ * Implements hook_block_view().
  */
 function facebook_pull_block_view($delta = '') {
   $block = array();
@@ -103,7 +103,7 @@ function facebook_pull_block_view($delta = '') {
 
 
 /**
- * Implementation hook_ctools_plugin_api().
+ * Implements hook_ctools_plugin_api().
  */
 function facebook_pull_ctools_plugin_api($module, $api) {
   return array('version' => 1);
@@ -111,7 +111,7 @@ function facebook_pull_ctools_plugin_api($module, $api) {
 
 
 /**
- * Implementation of hook_boxes_plugins().
+ * Implements hook_boxes_plugins().
  */
 function facebook_pull_boxes_plugins() {
   $info = array();
@@ -139,14 +139,14 @@ function facebook_pull_settings($form_state) {
   $form['facebook_pull_app_id'] = array(
     '#type' => 'textfield',
     '#title' => t('App ID'),
-    '#default_value' => t(variable_get('facebook_pull_app_id', '')),
+    '#default_value' => variable_get('facebook_pull_app_id', ''),
     '#description' => t('Unique !application_id for your facebook app.', array('!application_id' => $application_id)),
   );
 
   $form['facebook_pull_app_secret'] = array(
     '#type' => 'textfield',
     '#title' => t('App Secret'),
-    '#default_value' => t(variable_get('facebook_pull_app_secret', '')),
+    '#default_value' => variable_get('facebook_pull_app_secret', ''),
     '#description' => t('Your sites app secret.'),
   );
 
@@ -154,23 +154,40 @@ function facebook_pull_settings($form_state) {
   $form['facebook_pull_graph_id'] = array(
     '#type' => 'textfield',
     '#title' => t('Graph ID'),
-    '#default_value' => t(variable_get('facebook_pull_graph_id', '')),
+    '#default_value' => variable_get('facebook_pull_graph_id', ''),
     '#description' => t('The !graph_id of the page, user, or group.', array('!graph_id' => $graph_link)),
   );
 
   $form['facebook_pull_object_type'] = array(
     '#type' => 'textfield',
     '#title' => t('Object type'),
-    '#default_value' => t(variable_get('facebook_pull_object_type', '')),
-    '#description' => t('The object type to pull. This is most likely going to be "feed". Facebook API documentation may offer other endpoints such as "posts" or "tagged". They are not thoroughly tested.'),
+    '#default_value' => variable_get('facebook_pull_object_type', 'feed'),
+    '#description' => t('The object type to pull. This is most likely going to be the english word "feed". Facebook API documentation may offer other endpoints such as "posts" or "tagged". They are not thoroughly tested.'),
   );
 
   $form['facebook_pull_limit'] = array(
     '#type' => 'textfield',
     '#title' => t('Limit'),
     '#size' => 5,
-    '#default_value' => t(variable_get('facebook_pull_limit', '')),
+    '#default_value' => variable_get('facebook_pull_limit', ''),
     '#description' => t('How many posts to show in the box by default. If you have not entered a default limit here then it will default to 10.'),
+  );
+
+  $form['facebook_pull_fields'] = array(
+    '#type' => 'checkboxes',
+    '#title' => t('Fields'),
+    '#options' => array(
+      'picture' => t('picture'),
+      'message' => t('message'),
+      'from' => t('from'),
+      'type' => t('type'),
+      'created_time' => t('created_time'),
+      'link' => t('link'),
+      'description' => t('description'),
+      'name' => t('name'),
+    ),
+    '#default_value' => variable_get('facebook_pull_fields', array()),
+    '#description' => t('Which fields to retrieve from facebook.'),
   );
 
   return system_settings_form($form);
@@ -226,13 +243,20 @@ function _facebook_pull_notes_cached($id, $key, $viewer = 0) {
 
 
 /**
+ * Access Notes.
+ *
  * We need a specific way to access notes, as they are currently not available
  * due to the following bug in the facebook graph.
  *
- * Http://bugs.developers.facebook.net/show_bug.cgi?id=18266
+ * From: http://bugs.developers.facebook.net/show_bug.cgi?id=18266
  */
 function _facebook_pull_notes($id, $key, $viewer = 0) {
-  $data = array('id' => $id, 'viewer' => $viewer, 'key' => $key, 'format' => 'atom10');
+  $data = array(
+    'id' => $id,
+    'viewer' => $viewer,
+    'key' => $key,
+    'format' => 'atom10',
+  );
   $qs = http_build_query($data, '', '&');
   $url = 'http://www.facebook.com/feeds/notes.php?' . $qs;
 
@@ -316,32 +340,36 @@ function _facebook_pull_render_block() {
   $graph_id = variable_get('facebook_pull_graph_id', '');
   $type = variable_get('facebook_pull_object_type', '');
   $limit = variable_get('facebook_pull_limit', '');
+  $fields = implode(',', array_filter(variable_get('facebook_pull_fields', array())));
   $options = array(
     'limit' => $limit,
     'locale' => $language->language,
+    'fields' => $fields,
   );
 
   return facebook_pull_render($graph_id, $type, $app_id, $app_secret, $options);
 }
 
-//
-// Added for Notes section https://www.drupal.org/node/1993764
-//
 /**
- * Implements hook_preprocess_HOOK();.
+ * Implements hook_preprocess_HOOK().
+ *
+ * Added for Notes from: https://www.drupal.org/node/1993764
  */
 function facebook_pull_preprocess_facebook_pull_feed(&$variables) {
   if ($variables['items']) {
     global $is_https;
     foreach ($variables['items'] as &$item) {
-      $from = &$item->from;
-      $scheme = $is_https ? 'https' : 'http';
-      $from->picture = "$scheme://graph.facebook.com/$from->id/picture";
-      if (isset($from->name)) {
-        $from->name = check_plain($from->name);
-      }
-      if (isset($from->id)) {
-        $from->id = check_plain($from->id);
+      if (property_exists($item, 'from')) {
+        $from = &$item->from;
+        $scheme = $is_https ? 'https' : 'http';
+        $from->picture = "$scheme://graph.facebook.com/$from->id/picture";
+
+        if (isset($from->name)) {
+          $from->name = check_plain($from->name);
+        }
+        if (isset($from->id)) {
+          $from->id = check_plain($from->id);
+        }
       }
       if (isset($item->story)) {
         $item->story = check_plain($item->story);
@@ -363,7 +391,7 @@ function facebook_pull_preprocess_facebook_pull_feed(&$variables) {
 }
 
 /**
- * Implements hook_preprocess_HOOK();.
+ * Implements hook_preprocess_HOOK().
  */
 function facebook_pull_preprocess_facebook_pull_notes(&$variables) {
   if ($variables['feedid']) {
