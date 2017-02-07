@@ -1,4 +1,4 @@
-# Facebook-Pull
+# Facebook-Pull 7.x-3.1
 Drupal Module: https://www.drupal.org/project/facebook_pull
 
 <div class="field-item even"><p><em>Facebook Pull</em> is a fast and efficient module for displaying Facebook feeds on your site.</p>
