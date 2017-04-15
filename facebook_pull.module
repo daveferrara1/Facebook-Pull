@@ -355,14 +355,16 @@ function facebook_pull_preprocess_facebook_pull_feed(&$variables) {
   if ($variables['items']) {
     global $is_https;
     foreach ($variables['items'] as &$item) {
-      $from = &$item->from;
-      $scheme = $is_https ? 'https' : 'http';
-      $from->picture = "$scheme://graph.facebook.com/$from->id/picture";
-      if (isset($from->name)) {
-        $from->name = check_plain($from->name);
-      }
-      if (isset($from->id)) {
-        $from->id = check_plain($from->id);
+      if (property_exists($item, 'from')) {
+        $from = &$item->from;
+        $scheme = $is_https ? 'https' : 'http';
+        $from->picture = "$scheme://graph.facebook.com/$from->id/picture";
+        if (isset($from->name)) {
+          $from->name = check_plain($from->name);
+        }
+        if (isset($from->id)) {
+          $from->id = check_plain($from->id);
+        }
       }
       if (isset($item->story)) {
         $item->story = check_plain($item->story);

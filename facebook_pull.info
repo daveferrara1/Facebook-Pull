@@ -1,3 +1,4 @@
 name = Facebook pull
 description = Fast and efficient module to pull from a facebook stream.
+configure = admin/config/services/facebook-pull
 core = 7.x
